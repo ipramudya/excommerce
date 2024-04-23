@@ -1,0 +1,17 @@
+- accounts
+- users
+- favorites
+- cart_items
+- sellers
+- shops
+- addresses
+- products
+- product_categories
+- discounts
+- orders
+- order_items
+- coupons
+- sales_stats
+- payments
+- shipping
+- reviews

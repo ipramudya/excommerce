@@ -1,0 +1,197 @@
+// // Use DBML to define your database structure
+// // Docs: https://dbml.dbdiagram.io/docs
+
+Table accounts {
+  id uuid
+  email string
+  password string [note: 'should be hashed']
+  logout_at timestamp [default: null]
+  
+  created_at timestamp [default: 'now()']
+  updated_at timestamp [default: 'now()']
+}
+
+Table users {
+  id uuid
+  firstname string
+  lastname string
+
+  address_id uuid [ref: - addresses.id]
+  account_id uuid [ref: - accounts.id]
+
+  created_at timestamp [default: 'now()']
+  updated_at timestamp [default: 'now()']
+}
+
+Table favorites {
+  id uuid
+
+  product_id uuid [ref: - products.id]
+  user_id uuid [ref: - users.id]
+
+  created_at timestamp [default: 'now()']
+  updated_at timestamp [default: 'now()']
+}
+
+Table cart_items {
+  id uuid
+  quantity number
+
+  user_id uuid [ref: > users.id]
+  product_id uuid [ref: - products.id]
+
+  created_at timestamp [default: 'now()']
+  updated_at timestamp [default: 'now()']
+}
+
+Table sellers {
+  id uuid
+  firstname string
+  lastname string
+  bio text
+
+  created_at timestamp [default: 'now()']
+  updated_at timestamp [default: 'now()']
+
+  account_id uuid [ref: - accounts.id]
+}
+
+Table shops {
+  id uuid
+  name string
+  address text
+  bio text
+  contact string
+
+  seller_id uuid [ref: > sellers.id]
+  address_id uuid [ref: - addresses.id]
+
+  created_at timestamp [default: 'now()']
+  updated_at timestamp [default: 'now()']
+}
+
+Table addresses {
+  id uuid
+  full_line text
+  city string
+  province string
+  postal_code string
+}
+
+Table products {
+  id uuid
+  name string
+  description string
+  price string
+  stock number
+  sku_number string
+
+  shop_id uuid [ref: > shops.id]
+  discount_id uuid [ref: - discounts.id]
+
+  created_at timestamp [default: 'now()']
+  updated_at timestamp [default: 'now()']
+}
+
+Table product_categories {
+  id uuid
+  kind string [note: 'what kind of category, eg: size, color']
+  value string [note: 'value of product category, eg: red, green, medium, large']
+
+  product_id uuid [ref: - products.id]
+
+  created_at timestamp [default: 'now()']
+  updated_at timestamp [default: 'now()']
+}
+
+Table discounts {
+  id uuid
+  percentage number [note: 'should between 0 to 100', default: '0']
+  until timestamp [default: 'now()']
+
+  created_at timestamp [default: 'now()']
+  updated_at timestamp [default: 'now()']
+}
+
+Table orders {
+  id uuid
+  total_price number
+  payment_status string [note: 'unpaid, paid']
+  delivery_status string [note: 'pending, accepted, packed, sent, received']
+
+  user_id uuid [ref: - users.id]
+  shop_id uuid [ref: - shops.id]
+  shipping_id uuid [ref: > shipping.id]
+
+  created_at timestamp [default: 'now()']
+  updated_at timestamp [default: 'now()']
+}
+
+Table order_items {
+  id uuid
+  quantity number
+  price number
+
+  product_id uuid [ref: - products.id]
+  order_id uuid [ref: > orders.id]
+}
+
+Table coupons {
+  id uuid
+  percentage number [note: 'should between 0 to 100', default: '0']
+  max_usage number [note: 'how many usages applied', default: null]
+
+  order_id uuid [ref: - orders.id]
+
+  created_at timestamp [default: 'now()']
+  updated_at timestamp [default: 'now()']
+}
+
+Table sales_stats {
+  id uuid
+  total_orders number
+  revenue number
+
+  shop_id uuid [ref: - shops.id]
+
+  created_at timestamp [default: 'now()']
+  updated_at timestamp [default: 'now()']
+}
+
+Table payments {
+  id uuid
+  method string [note: 'credit card, cash, etc']
+  transaction_id uuid [note: 'external reference from payment gateway']
+  amount number
+
+  order_id uuid [ref: - orders.id]
+
+  created_at timestamp [default: 'now()']
+  updated_at timestamp [default: 'now()']
+}
+
+Table shipping {
+  id uuid
+  estimated_date timestamp
+  method string [note: 'gojek, jne, express, etc']
+
+  shop_id uuid [ref: > shops.id]
+  shipping_address_id uuid [ref: - addresses.id]
+
+  created_at timestamp [default: 'now()']
+  updated_at timestamp [default: 'now()']
+}
+
+Table reviews {
+  id uuid
+  message string
+  score number [note: 'should between 1 to 5']
+  is_hidden boolean [default: 'false']
+
+  user_id uuid [ref: - users.id]
+  product_id uuid [ref: > products.id]
+  shop_id uuid [ref: > shops.id]
+
+  created_at timestamp [default: 'now()']
+  updated_at timestamp [default: 'now()']
+}
