@@ -18,7 +18,14 @@ defmodule ExcommerceApiWeb.FallbackController do
   def call(conn, {:error, :not_found}) do
     conn
     |> put_status(:not_found)
-    |> put_view(html: ExcommerceApiWeb.ErrorHTML, json: ExcommerceApiWeb.ErrorJSON)
+    |> put_view(json: ExcommerceApiWeb.ErrorJSON)
     |> render(:"404")
+  end
+
+  def call(conn, {:error, :bad_request}) do
+    conn
+    |> put_status(:bad_request)
+    |> put_view(json: ExcommerceApiWeb.ErrorJSON)
+    |> render(:"400")
   end
 end

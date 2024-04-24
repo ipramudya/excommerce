@@ -29,10 +29,4 @@ defmodule ExcommerceApi.Accounts do
     |> Account.changeset(attrs)
     |> Repo.insert()
   end
-
-  # def update_account(%Account{} = account, attrs) do
-  #   account
-  #   |> Account.changeset(attrs)
-  #   |> Repo.update()
-  # end
 end

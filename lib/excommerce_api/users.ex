@@ -39,31 +39,27 @@ defmodule ExcommerceApi.Users do
 
   @spec update_user(Account.t(), map()) :: {:ok, Account.t()} | {:error, Ecto.Changeset.t()}
   def update_user(%Account{} = account, attrs) do
-    remap_attrs =
-      account
-      |> Map.from_struct()
-      |> Map.replace(:email, attrs["email"])
-      |> Map.update(:user, nil, fn user ->
-        %{
-          Map.from_struct(user)
-          | firstname: attrs["firstname"],
-            lastname: attrs["lastname"]
-        }
-      end)
+    case attrs do
+      %{"email" => email, "firstname" => firstname, "lastname" => lastname} ->
+        remap_attrs =
+          account
+          |> Map.from_struct()
+          |> Map.replace(:email, email)
+          |> Map.update(:user, nil, fn user ->
+            %{
+              Map.from_struct(user)
+              | firstname: firstname,
+                lastname: lastname
+            }
+          end)
 
-    account
-    |> Repo.preload(:user)
-    |> Account.update_changeset(remap_attrs)
-    |> Repo.update()
-  end
+        account
+        |> Repo.preload(:user)
+        |> Account.update_changeset(remap_attrs)
+        |> Repo.update()
 
-  @spec delete_user(User.t()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
-  def delete_user(%User{} = user) do
-    Repo.delete(user)
-  end
-
-  @spec change_user(User.t(), map()) :: Ecto.Changeset.t()
-  def change_user(%User{} = user, attrs \\ %{}) do
-    User.changeset(user, attrs)
+      _ ->
+        {:error, :bad_request}
+    end
   end
 end

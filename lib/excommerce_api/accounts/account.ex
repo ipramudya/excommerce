@@ -37,14 +37,13 @@ defmodule ExcommerceApi.Accounts.Account do
     |> unique_constraint(:email)
   end
 
-  defp hash_password(
-         %Ecto.Changeset{
-           valid?: true,
-           changes: %{password: unhashed_password}
-         } = changeset
-       ) do
-    change(changeset, %{password: Bcrypt.hash_pwd_salt(unhashed_password)})
-  end
+  defp hash_password(changeset) do
+    case changeset do
+      %Ecto.Changeset{valid?: true, changes: %{password: plain_password}} ->
+        change(changeset, %{password: Bcrypt.hash_pwd_salt(plain_password)})
 
-  defp hash_password(changeset), do: changeset
+      _ ->
+        changeset
+    end
+  end
 end
