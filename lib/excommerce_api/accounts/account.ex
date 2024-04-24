@@ -3,10 +3,10 @@ defmodule ExcommerceApi.Accounts.Account do
   import Ecto.Changeset
 
   @type t :: %__MODULE__{
-    password: String.t(),
-    email: String.t(),
-    logout_at: String.t() | nil
-  }
+          password: String.t(),
+          email: String.t(),
+          logout_at: String.t() | nil
+        }
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id

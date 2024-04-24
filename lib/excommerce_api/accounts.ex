@@ -17,15 +17,15 @@ defmodule ExcommerceApi.Accounts do
     Repo.delete(account)
   end
 
-  # def create_account(attrs \\ %{}) do
-  #   %Account{}
-  #   |> Account.changeset(attrs)
-  #   |> Repo.insert()
-  # end
+  def create_account(attrs \\ %{}) do
+    %Account{}
+    |> Account.changeset(attrs)
+    |> Repo.insert()
+  end
 
-  # def update_account(%Account{} = account, attrs) do
-  #   account
-  #   |> Account.changeset(attrs)
-  #   |> Repo.update()
-  # end
+  def update_account(%Account{} = account, attrs) do
+    account
+    |> Account.changeset(attrs)
+    |> Repo.update()
+  end
 end

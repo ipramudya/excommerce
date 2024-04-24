@@ -12,5 +12,8 @@ defmodule ExcommerceApiWeb.Router do
     get "/accounts", AccountController, :index
     get "/accounts/:id", AccountController, :show
     delete "/accounts/:id", AccountController, :delete
+
+    resources "/users", UserController, except: [:new, :edit, :update]
+    put "/users/:id", UserController, :update
   end
 end
