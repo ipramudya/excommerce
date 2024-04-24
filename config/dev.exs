@@ -2,8 +2,8 @@ import Config
 
 # Configure your database
 config :excommerce_api, ExcommerceApi.Repo,
-  username: "postgres",
-  password: "postgres",
+  username: "pramudya",
+  password: "password",
   hostname: "localhost",
   database: "excommerce_api_dev",
   stacktrace: true,

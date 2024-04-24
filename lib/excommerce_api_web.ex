@@ -17,8 +17,6 @@ defmodule ExcommerceApiWeb do
   those modules here.
   """
 
-  def static_paths, do: ~w(assets fonts images favicon.ico robots.txt)
-
   def router do
     quote do
       use Phoenix.Router, helpers: false
@@ -42,7 +40,6 @@ defmodule ExcommerceApiWeb do
         layouts: [html: ExcommerceApiWeb.Layouts]
 
       import Plug.Conn
-      import ExcommerceApiWeb.Gettext
 
       unquote(verified_routes())
     end
