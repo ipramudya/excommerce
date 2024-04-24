@@ -21,7 +21,11 @@ erl_crash.dump
 
 # Temporary files, for example, from tests.
 /tmp/
+/test_suite_analysis
+/managed_context
 
 # Ignore package tarball (built via "mix hex.build").
 excommerce_api-*.tar
 
+# Ignore language server directory
+.elixir_ls

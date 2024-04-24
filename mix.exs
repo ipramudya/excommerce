@@ -32,16 +32,17 @@ defmodule ExcommerceApi.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.7.12"},
-      {:phoenix_ecto, "~> 4.4"},
+      {:bandit, "~> 1.2"},
       {:bcrypt_elixir, "~> 3.1"},
+      {:dns_cluster, "~> 0.1.1"},
       {:ecto_sql, "~> 3.10"},
+      {:guardian, "~> 2.3.2"},
+      {:jason, "~> 1.2"},
+      {:phoenix_ecto, "~> 4.4"},
+      {:phoenix, "~> 1.7.12"},
       {:postgrex, ">= 0.0.0"},
       {:telemetry_metrics, "~> 1.0"},
-      {:telemetry_poller, "~> 1.0"},
-      {:jason, "~> 1.2"},
-      {:dns_cluster, "~> 0.1.1"},
-      {:bandit, "~> 1.2"}
+      {:telemetry_poller, "~> 1.0"}
     ]
   end
 
