@@ -15,8 +15,18 @@ defmodule ExcommerceApi.Users do
     Repo.all(query)
   end
 
-  @spec get_user!(binary()) :: User.t()
-  def get_user!(id), do: Repo.get!(User, id)
+  @spec get_user!(binary()) :: Account.t() | term()
+  def get_user!(id) do
+    query =
+      from(a in Account,
+        join: u in User,
+        on: a.id == u.account_id,
+        preload: :user,
+        where: u.id == ^id
+      )
+
+    Repo.one!(query)
+  end
 
   @spec create_user(map(), map()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
   def create_user(account, user_attrs) do

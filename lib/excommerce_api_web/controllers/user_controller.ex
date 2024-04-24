@@ -23,8 +23,9 @@ defmodule ExcommerceApiWeb.UserController do
 
   @spec show(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def show(conn, %{"id" => id}) do
-    user = Users.get_user!(id)
-    render(conn, :show, user: user)
+    account = Users.get_user!(id)
+    IO.inspect(account)
+    render(conn, :show, account: account)
   end
 
   @spec update(Plug.Conn.t(), map()) :: Plug.Conn.t()
