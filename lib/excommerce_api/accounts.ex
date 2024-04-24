@@ -6,18 +6,15 @@ defmodule ExcommerceApi.Accounts do
 
   @spec list_accounts() :: [Account.t()]
   def list_accounts do
-    query =
-      from(a in Account,
-        join: u in assoc(a, :user),
-        # LATER: join: s in assoc(a, :seller),
-        preload: :user
-      )
-
-    Repo.all(query)
+    Account
+    |> Repo.all()
+    |> Repo.preload(:user)
   end
 
   @spec get_account!(binary()) :: Account.t()
-  def get_account!(id), do: Repo.get!(Account, id)
+  def get_account!(id) do
+    Repo.get!(Account, id) |> Repo.preload(:user)
+  end
 
   @spec delete_account(Account.t()) :: {:ok, Account.t()} | {:error, Ecto.Changeset.t()}
   def delete_account(%Account{} = account) do
