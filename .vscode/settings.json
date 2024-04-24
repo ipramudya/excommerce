@@ -1,5 +1,6 @@
 {
     "elixirLS.suggestSpecs": false,
+    "editor.formatOnSave": true,
     "[elixir]": {
         "editor.defaultFormatter": "JakeBecker.elixir-ls"
     }

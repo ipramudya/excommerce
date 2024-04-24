@@ -1,4 +1,5 @@
 defmodule ExcommerceApiWeb.Router do
+  alias ExcommerceApiWeb
   use ExcommerceApiWeb, :router
 
   pipeline :api do
@@ -7,5 +8,9 @@ defmodule ExcommerceApiWeb.Router do
 
   scope "/api", ExcommerceApiWeb do
     pipe_through :api
+
+    get "/accounts", AccountController, :index
+    get "/accounts/:id", AccountController, :show
+    delete "/accounts/:id", AccountController, :delete
   end
 end
