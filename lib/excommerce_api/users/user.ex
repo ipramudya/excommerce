@@ -13,9 +13,12 @@ defmodule ExcommerceApi.Users.User do
   schema "users" do
     field :firstname, :string
     field :lastname, :string
-    field :account_id, :binary_id
 
-    belongs_to(:accounts, ExcommerceApi.Accounts.Account, type: :binary_id)
+    belongs_to(:accounts, ExcommerceApi.Accounts.Account,
+      foreign_key: :account_id,
+      type: :binary_id
+    )
+
     timestamps(inserted_at: :created_at)
   end
 

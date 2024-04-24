@@ -6,7 +6,14 @@ defmodule ExcommerceApi.Accounts do
 
   @spec list_accounts() :: [Account.t()]
   def list_accounts do
-    Repo.all(Account)
+    query =
+      from(a in Account,
+        join: u in assoc(a, :user),
+        # LATER: join: s in assoc(a, :seller),
+        preload: :user
+      )
+
+    Repo.all(query)
   end
 
   @spec get_account!(binary()) :: Account.t()
@@ -23,9 +30,9 @@ defmodule ExcommerceApi.Accounts do
     |> Repo.insert()
   end
 
-  def update_account(%Account{} = account, attrs) do
-    account
-    |> Account.changeset(attrs)
-    |> Repo.update()
-  end
+  # def update_account(%Account{} = account, attrs) do
+  #   account
+  #   |> Account.changeset(attrs)
+  #   |> Repo.update()
+  # end
 end

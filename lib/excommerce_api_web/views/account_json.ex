@@ -13,7 +13,13 @@ defmodule ExcommerceApiWeb.AccountJSON do
     %{
       id: account.id,
       email: account.email,
-      logout_at: account.logout_at
+      logout_at: account.logout_at,
+      user: %{
+        id: account.user.id,
+        firstname: account.user.firstname,
+        lastname: account.user.lastname
+      },
+      seller: nil
     }
   end
 end

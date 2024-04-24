@@ -1,21 +1,28 @@
 defmodule ExcommerceApi.Users do
   import Ecto.Query, warn: false
-  alias ExcommerceApi.Repo
+  alias ExcommerceApi.{Repo, Accounts.Account, Users.User}
 
-  alias ExcommerceApi.Users.User
-
-  @spec list_users() :: [User.t()]
+  @spec list_users() :: [Account.t()]
   def list_users do
-    Repo.all(User)
+    query =
+      from(
+        a in Account,
+        join: u in User,
+        on: a.id == u.account_id,
+        preload: :user
+      )
+
+    Repo.all(query)
   end
 
   @spec get_user!(binary()) :: User.t()
   def get_user!(id), do: Repo.get!(User, id)
 
-  @spec create_user(map()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
-  def create_user(attrs \\ %{}) do
-    %User{}
-    |> User.changeset(attrs)
+  @spec create_user(map(), map()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
+  def create_user(account, user_attrs) do
+    account
+    |> Ecto.build_assoc(:user)
+    |> User.changeset(user_attrs)
     |> Repo.insert()
   end
 

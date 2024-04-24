@@ -1,25 +1,36 @@
 defmodule ExcommerceApiWeb.UserJSON do
-  alias ExcommerceApi.Users.User
+  alias ExcommerceApi.{Accounts.Account, Users.User}
 
   @doc """
   Renders a list of users.
   """
-  def index(%{users: users}) do
-    %{data: for(user <- users, do: data(user))}
-  end
-
-  @doc """
-  Renders a single user.
-  """
-  def show(%{user: user}) do
-    %{data: data(user)}
-  end
-
-  defp data(%User{} = user) do
+  def index(%{accounts: accounts}) do
     %{
-      id: user.id,
-      firstname: user.firstname,
-      lastname: user.lastname
+      data:
+        for(
+          account <- accounts,
+          do: %{
+            id: account.user.id,
+            email: account.email,
+            logout_at: account.logout_at,
+            firstname: account.user.firstname,
+            lastname: account.user.lastname
+          }
+        )
+    }
+  end
+
+  @spec created(%{:account => Account.t(), :user => User.t()}) :: map()
+  def created(%{user: %User{} = user, account: %Account{} = account}) do
+    %{
+      id: account.id,
+      email: account.email,
+      logout_at: account.logout_at,
+      user: %{
+        id: user.id,
+        firstname: user.firstname,
+        lastname: user.lastname
+      }
     }
   end
 end
