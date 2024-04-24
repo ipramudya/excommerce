@@ -22,13 +22,19 @@ defmodule ExcommerceApi.Accounts.Account do
     timestamps(inserted_at: :created_at)
   end
 
-  @doc false
   def changeset(account, attrs) do
     account
     |> cast(attrs, [:email, :password, :logout_at])
     |> validate_required([:email, :password])
     |> unique_constraint(:email)
     |> hash_password()
+  end
+
+  def update_changeset(account, attrs) do
+    account
+    |> cast(attrs, [:email])
+    |> cast_assoc(:user)
+    |> unique_constraint(:email)
   end
 
   defp hash_password(

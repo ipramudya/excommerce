@@ -1,5 +1,6 @@
 defmodule ExcommerceApi.Users do
   import Ecto.Query, warn: false
+  alias Hex.API.User
   alias ExcommerceApi.{Repo, Accounts.Account, Users.User}
 
   @spec list_users() :: [Account.t()]
@@ -36,10 +37,23 @@ defmodule ExcommerceApi.Users do
     |> Repo.insert()
   end
 
-  @spec update_user(User.t(), map()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
-  def update_user(%User{} = user, attrs) do
-    user
-    |> User.changeset(attrs)
+  @spec update_user(Account.t(), map()) :: {:ok, Account.t()} | {:error, Ecto.Changeset.t()}
+  def update_user(%Account{} = account, attrs) do
+    remap_attrs =
+      account
+      |> Map.from_struct()
+      |> Map.replace(:email, attrs["email"])
+      |> Map.update(:user, nil, fn user ->
+        %{
+          Map.from_struct(user)
+          | firstname: attrs["firstname"],
+            lastname: attrs["lastname"]
+        }
+      end)
+
+    account
+    |> Repo.preload(:user)
+    |> Account.update_changeset(remap_attrs)
     |> Repo.update()
   end
 

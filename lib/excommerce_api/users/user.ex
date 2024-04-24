@@ -22,7 +22,6 @@ defmodule ExcommerceApi.Users.User do
     timestamps(inserted_at: :created_at)
   end
 
-  @doc false
   def changeset(user, attrs) do
     user
     |> cast(attrs, [:firstname, :lastname])

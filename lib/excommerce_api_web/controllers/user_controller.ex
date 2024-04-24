@@ -24,25 +24,21 @@ defmodule ExcommerceApiWeb.UserController do
   @spec show(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def show(conn, %{"id" => id}) do
     account = Users.get_user!(id)
-    IO.inspect(account)
     render(conn, :show, account: account)
   end
 
   @spec update(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def update(conn, %{"id" => id, "user" => user_params}) do
-    user = Users.get_user!(id)
+    account = Users.get_user!(id)
 
-    with {:ok, %User{} = user} <- Users.update_user(user, user_params) do
-      render(conn, :show, user: user)
+    with {:ok, %Account{} = account} <- Users.update_user(account, user_params) do
+      render(conn, :show, account: account)
     end
   end
 
   @spec delete(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def delete(conn, %{"id" => id}) do
-    user = Users.get_user!(id)
-
-    with {:ok, %User{}} <- Users.delete_user(user) do
-      send_resp(conn, :no_content, "")
-    end
+    account = Users.get_user!(id)
+    ExcommerceApiWeb.AccountController.delete(conn, %{"id" => account.id})
   end
 end

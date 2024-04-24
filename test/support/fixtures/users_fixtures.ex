@@ -14,7 +14,8 @@ defmodule ExcommerceApi.UsersFixtures do
         firstname: "some firstname",
         lastname: "some lastname"
       })
-      |> ExcommerceApi.Users.create_user()
+
+    # |> ExcommerceApi.Users.create_user()
 
     user
   end
