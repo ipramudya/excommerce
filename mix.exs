@@ -40,6 +40,7 @@ defmodule ExcommerceApi.MixProject do
       {:jason, "~> 1.2"},
       {:phoenix_ecto, "~> 4.4"},
       {:phoenix, "~> 1.7.12"},
+      {:poison, "~> 5.0"},
       {:postgrex, ">= 0.0.0"},
       {:telemetry_metrics, "~> 1.0"},
       {:telemetry_poller, "~> 1.0"}

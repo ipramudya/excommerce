@@ -22,6 +22,10 @@ config :excommerce_api, ExcommerceApiWeb.Endpoint,
   pubsub_server: ExcommerceApi.PubSub,
   live_view: [signing_salt: "Ap2p85us"]
 
+config :excommerce_api, ExcommerceApiWeb.Auth.Guardian,
+  issuer: "excommerce_api",
+  secret_key: "a5YKYpFLFwsMWhgftTaHDWkl3EDGd0wCggU261jYHGT+2JUPV8G5uJSU0w0lUCdk"
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

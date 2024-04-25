@@ -28,4 +28,10 @@ defmodule ExcommerceApiWeb.FallbackController do
     |> put_view(json: ExcommerceApiWeb.ErrorJSON)
     |> render(:"400")
   end
+
+  def call(conn, {:error, message}) when is_bitstring(message) do
+    conn
+    |> put_status(:bad_request)
+    |> json(%{errors: %{message: message}})
+  end
 end

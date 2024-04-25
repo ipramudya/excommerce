@@ -9,6 +9,10 @@ defmodule ExcommerceApiWeb.AccountJSON do
     %{data: data(account)}
   end
 
+  def show_with_token(%{account: account, token: token}) do
+    %{data: data(account), token: token}
+  end
+
   defp data(%Account{} = account) do
     %{
       id: account.id,
