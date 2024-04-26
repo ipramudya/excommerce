@@ -43,7 +43,9 @@ defmodule ExcommerceApi.Accounts.Account do
   def role_changeset(account, attrs) do
     account
     |> cast(attrs, [:role])
-    |> validate_exclusion(:role, ~w"(admin common)")
+    |> validate_inclusion(:role, ["common", "admin"],
+      message: "Invalid value. Should be either 'common' or 'admin'"
+    )
   end
 
   defp hash_password(changeset) do

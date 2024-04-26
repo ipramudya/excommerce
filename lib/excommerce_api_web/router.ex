@@ -38,16 +38,19 @@ defmodule ExcommerceApiWeb.Router do
   scope "/api", ExcommerceApiWeb do
     pipe_through [:api, :auth, :ensure_auth, :ensure_admin]
 
-    get "/users", UserController, :index
-    get "/users/:id", UserController, :show
     post "/accounts", AccountController, :create
+
+    get "/users", UserController, :index
+    post "/users", UserController, :create
+    get "/users/:id", UserController, :show
+    put "/users/:id", UserController, :update
+    delete "/users/:id", UserController, :delete
   end
 
   # ------------ basic authorization ------------
   scope "/api", ExcommerceApiWeb do
     pipe_through [:api, :auth, :ensure_auth]
 
-    put "/users/:id", UserController, :update
-    delete "/users/:id", UserController, :delete
+    # TODO: resources for personal user info, without passing id, retrieve from user's token
   end
 end

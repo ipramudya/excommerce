@@ -17,7 +17,7 @@ defmodule ExcommerceApiWeb.UserController do
          {:ok, %User{} = user} <- Users.create_user(account, user_params) do
       conn
       |> put_status(:created)
-      |> render(:created, data: %{account: account, user: user})
+      |> render(:created, %{account: account, user: user})
     end
   end
 
