@@ -1,5 +1,5 @@
 defmodule ExcommerceApi.Accounts.Account do
-  alias ExcommerceApi.Users.User
+  alias ExcommerceApi.Accounts.User
   use Ecto.Schema
   import Ecto.Changeset
 

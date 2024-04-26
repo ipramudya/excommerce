@@ -4,7 +4,7 @@ defmodule ExcommerceApi.UsersTest do
   alias ExcommerceApi.Users
 
   describe "users" do
-    alias ExcommerceApi.Users.User
+    alias ExcommerceApi.Accounts.User
 
     import ExcommerceApi.UsersFixtures
 

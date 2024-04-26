@@ -3,7 +3,7 @@ defmodule ExcommerceApiWeb.UserControllerTest do
 
   import ExcommerceApi.UsersFixtures
 
-  alias ExcommerceApi.Users.User
+  alias ExcommerceApi.Accounts.User
 
   @create_attrs %{
     firstname: "some firstname",
