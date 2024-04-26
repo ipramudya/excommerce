@@ -1,5 +1,5 @@
 defmodule ExcommerceApiWeb.UserJSON do
-  alias ExcommerceApi.{Accounts.Account, Users.User}
+  alias ExcommerceApi.Accounts.{Account, User}
 
   def index(%{accounts: accounts}) do
     %{data: for(account <- accounts, do: remap_data_not_creation(account))}

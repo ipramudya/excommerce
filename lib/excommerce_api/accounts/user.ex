@@ -1,4 +1,4 @@
-defmodule ExcommerceApi.Users.User do
+defmodule ExcommerceApi.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
 

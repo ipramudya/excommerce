@@ -1,7 +1,7 @@
 defmodule ExcommerceApiWeb.UserController do
   use ExcommerceApiWeb, :controller
 
-  alias ExcommerceApi.{Accounts, Accounts.Account, Users, Users.User}
+  alias ExcommerceApi.{Accounts, Accounts.Account, Users, Accounts.User}
 
   action_fallback ExcommerceApiWeb.FallbackController
 
