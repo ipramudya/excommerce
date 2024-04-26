@@ -2,10 +2,10 @@ import Config
 
 # Configure your database
 config :excommerce_api, ExcommerceApi.Repo,
-  username: "pramudya",
-  password: "password",
-  hostname: "localhost",
-  database: "excommerce_api_dev",
+  username: System.get_env("PSQL_DEV_USERNAME"),
+  password: System.get_env("PSQL_DEV_PASSWORD"),
+  hostname: System.get_env("PSQL_DEV_HOSTNAME"),
+  database: System.get_env("PSQL_DEV_DATABASE"),
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
@@ -23,7 +23,7 @@ config :excommerce_api, ExcommerceApiWeb.Endpoint,
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "MEItCnxwdSL8rCXFIsWWHs2hVTrA2AofZ84FuRLHcXKYng+8zdAjxoVu4oY/j3/E",
+  secret_key_base: System.get_env("ENDPOINT_SECRET_KEY_BASE"),
   watchers: []
 
 # ## SSL Support

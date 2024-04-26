@@ -29,3 +29,7 @@ excommerce_api-*.tar
 
 # Ignore language server directory
 .elixir_ls
+
+# Environtnment variables
+/envs/
+*.env

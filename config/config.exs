@@ -24,7 +24,7 @@ config :excommerce_api, ExcommerceApiWeb.Endpoint,
 
 config :excommerce_api, ExcommerceApiWeb.Auth.Guardian,
   issuer: "excommerce_api",
-  secret_key: "a5YKYpFLFwsMWhgftTaHDWkl3EDGd0wCggU261jYHGT+2JUPV8G5uJSU0w0lUCdk"
+  secret_key: System.get_env("GUARDIAN_SECRET_KEY")
 
 # Configures Elixir's Logger
 config :logger, :console,
