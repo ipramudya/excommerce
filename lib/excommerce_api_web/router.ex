@@ -23,16 +23,18 @@ defmodule ExcommerceApiWeb.Router do
     get "/users", UserController, :index
     get "/users/:id", UserController, :show
     post "/users", UserController, :create
+    post "/accounts", AccountController, :create
   end
 
   # ------------ private routes ------------
   scope "/api", ExcommerceApiWeb do
     pipe_through [:api, :auth, :ensure_auth]
 
-    # admin/vip authorization
+    # superadmin/admin authorization
     get "/accounts", AccountController, :index
     get "/accounts/:id", AccountController, :show
     delete "/accounts/:id", AccountController, :delete
+    put "/accounts/:id/role", AccountController, :change_role
 
     put "/users/:id", UserController, :update
     delete "/users/:id", UserController, :delete

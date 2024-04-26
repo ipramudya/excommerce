@@ -22,14 +22,23 @@ defmodule ExcommerceApi.Accounts do
     Repo.one(query) |> Repo.preload(:user)
   end
 
+  @spec create_account(map()) :: {:ok, Account.t()} | {:error, Ecto.Changeset.t()}
+  def create_account(attrs \\ %{}) do
+    %Account{}
+    |> Repo.preload(:user)
+    |> Account.changeset(attrs)
+    |> Repo.insert()
+  end
+
   @spec delete_account(Account.t()) :: {:ok, Account.t()} | {:error, Ecto.Changeset.t()}
   def delete_account(%Account{} = account) do
     Repo.delete(account)
   end
 
-  def create_account(attrs \\ %{}) do
-    %Account{}
-    |> Account.changeset(attrs)
-    |> Repo.insert()
+  @spec change_role(Account.t(), map()) :: {:ok, Account.t()} | {:error, Ecto.Changeset.t()}
+  def change_role(account, attrs \\ %{}) do
+    account
+    |> Account.role_changeset(attrs)
+    |> Repo.update()
   end
 end

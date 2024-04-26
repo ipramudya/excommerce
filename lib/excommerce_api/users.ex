@@ -32,6 +32,7 @@ defmodule ExcommerceApi.Users do
   @spec create_user(map(), map()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
   def create_user(account, user_attrs) do
     account
+    |> Map.replace(:role, "common")
     |> Ecto.build_assoc(:user)
     |> User.changeset(user_attrs)
     |> Repo.insert()

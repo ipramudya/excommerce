@@ -14,16 +14,29 @@ defmodule ExcommerceApiWeb.AccountJSON do
   end
 
   defp data(%Account{} = account) do
+    # IO.inspect(["runs", Map.fetch(account, :user)])
+    IO.inspect(["runs", account])
+
+    user =
+      case Map.fetch(account, :user) do
+        {:ok, nil} ->
+          nil
+
+        {:ok, user} ->
+          %{
+            id: user.id,
+            firstname: user.firstname,
+            lastname: user.lastname
+          }
+      end
+
     %{
       id: account.id,
       email: account.email,
       logout_at: account.logout_at,
-      user: %{
-        id: account.user.id,
-        firstname: account.user.firstname,
-        lastname: account.user.lastname
-      },
-      seller: nil
+      role: account.role,
+      seller: nil,
+      user: user
     }
   end
 end

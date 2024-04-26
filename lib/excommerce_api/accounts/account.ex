@@ -7,6 +7,7 @@ defmodule ExcommerceApi.Accounts.Account do
           password: String.t(),
           email: String.t(),
           logout_at: String.t() | nil,
+          role: String.t(),
           user: User.t() | nil
         }
 
@@ -16,15 +17,17 @@ defmodule ExcommerceApi.Accounts.Account do
     field :password, :string
     field :email, :string
     field :logout_at, :string
+    field :role, :string
 
-    has_one :user, User
+    has_one :user, User, defaults: nil
 
     timestamps(inserted_at: :created_at)
   end
 
   def changeset(account, attrs) do
     account
-    |> cast(attrs, [:email, :password, :logout_at])
+    |> cast(attrs, [:email, :password, :logout_at, :role])
+    |> cast_assoc(:user)
     |> validate_required([:email, :password])
     |> unique_constraint(:email)
     |> hash_password()
@@ -35,6 +38,12 @@ defmodule ExcommerceApi.Accounts.Account do
     |> cast(attrs, [:email])
     |> cast_assoc(:user)
     |> unique_constraint(:email)
+  end
+
+  def role_changeset(account, attrs) do
+    account
+    |> cast(attrs, [:role])
+    |> validate_exclusion(:role, ~w"(admin common)")
   end
 
   defp hash_password(changeset) do

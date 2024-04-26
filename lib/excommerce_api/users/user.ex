@@ -25,6 +25,7 @@ defmodule ExcommerceApi.Users.User do
   def changeset(user, attrs) do
     user
     |> cast(attrs, [:firstname, :lastname])
+    |> foreign_key_constraint(:account_id)
     |> validate_required([:firstname, :lastname])
   end
 end
