@@ -1,5 +1,6 @@
 defmodule ExcommerceApi.Accounts do
   import Ecto.Query, warn: false
+  alias ExcommerceApi.Address
   alias ExcommerceApi.Repo
 
   alias ExcommerceApi.Accounts.Account
@@ -30,9 +31,14 @@ defmodule ExcommerceApi.Accounts do
     |> Repo.insert()
   end
 
-  @spec delete_account(Account.t()) :: {:ok, Account.t()} | {:error, Ecto.Changeset.t()}
+  # @spec delete_account(Account.t()) :: {:ok, Account.t()} | {:error, Ecto.Changeset.t()}
   def delete_account(%Account{} = account) do
-    Repo.delete(account)
+    Ecto.Multi.new()
+    |> Ecto.Multi.delete(:account, account)
+    |> Ecto.Multi.delete(:address, fn %{account: account} ->
+      %Address{id: account.user.address_id}
+    end)
+    |> Repo.transaction()
   end
 
   @spec change_role(Account.t(), map()) :: {:ok, Account.t()} | {:error, Ecto.Changeset.t()}

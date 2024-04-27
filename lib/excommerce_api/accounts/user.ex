@@ -5,7 +5,8 @@ defmodule ExcommerceApi.Accounts.User do
   @type t :: %__MODULE__{
           firstname: String.t(),
           lastname: String.t(),
-          account_id: any()
+          account_id: any(),
+          address_id: any()
         }
 
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -19,13 +20,16 @@ defmodule ExcommerceApi.Accounts.User do
       type: :binary_id
     )
 
+    belongs_to(:address, ExcommerceApi.Address)
+
     timestamps(inserted_at: :created_at)
   end
 
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:firstname, :lastname])
+    |> cast(attrs, [:firstname, :lastname, :account_id, :address_id])
     |> foreign_key_constraint(:account_id)
+    |> foreign_key_constraint(:address_id)
     |> validate_required([:firstname, :lastname])
   end
 end

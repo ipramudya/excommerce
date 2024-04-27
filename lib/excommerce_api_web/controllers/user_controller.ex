@@ -1,23 +1,29 @@
 defmodule ExcommerceApiWeb.UserController do
   use ExcommerceApiWeb, :controller
 
-  alias ExcommerceApi.{Accounts, Accounts.Account, Users, Accounts.User}
+  alias ExcommerceApi.{Accounts, Accounts.Account, Users}
 
   action_fallback ExcommerceApiWeb.FallbackController
 
   @spec index(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def index(conn, _params) do
     accounts = Users.list_users()
+
+    IO.inspect(accounts)
     render(conn, :index, accounts: accounts)
   end
 
   @spec create(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def create(conn, %{"account" => account_params, "user" => user_params}) do
     with {:ok, %Account{} = account} <- Accounts.create_account(account_params),
-         {:ok, %User{} = user} <- Users.create_user(account, user_params) do
+         {:ok, created_user_transaction} <- Users.create_user(account, user_params) do
       conn
       |> put_status(:created)
-      |> render(:created, %{account: account, user: user})
+      |> render(:created, %{
+        account: account,
+        user: created_user_transaction[:user],
+        address: created_user_transaction[:address]
+      })
     end
   end
 

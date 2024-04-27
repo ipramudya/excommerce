@@ -1,11 +1,9 @@
 defmodule ExcommerceApiWeb.UserJSON do
-  alias ExcommerceApi.Accounts.{Account, User}
-
   def index(%{accounts: accounts}) do
     %{data: for(account <- accounts, do: remap_data_not_creation(account))}
   end
 
-  def created(%{user: %User{} = user, account: %Account{} = account}) do
+  def created(%{user: user, account: account, address: address}) do
     %{
       data: %{
         account_id: account.id,
@@ -13,7 +11,8 @@ defmodule ExcommerceApiWeb.UserJSON do
         firstname: user.firstname,
         id: user.id,
         lastname: user.lastname,
-        logout_at: account.logout_at
+        logout_at: account.logout_at,
+        address: Map.take(address, [:id, :full_line, :city, :province, :postal_code])
       }
     }
   end
@@ -29,7 +28,8 @@ defmodule ExcommerceApiWeb.UserJSON do
       firstname: data.user.firstname,
       id: data.user.id,
       lastname: data.user.lastname,
-      logout_at: data.logout_at
+      logout_at: data.logout_at,
+      address: Map.take(data.user.address, [:id, :full_line, :province, :city, :postal_code])
     }
   end
 end

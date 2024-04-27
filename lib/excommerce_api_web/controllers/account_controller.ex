@@ -29,7 +29,7 @@ defmodule ExcommerceApiWeb.AccountController do
   def delete(conn, %{"id" => id}) do
     account = Accounts.get_account!(id)
 
-    with {:ok, %Account{}} <- Accounts.delete_account(account) do
+    with {:ok, _transaction} <- Accounts.delete_account(account) do
       conn
       |> put_status(:accepted)
       |> json(%{data: %{status: "success"}})

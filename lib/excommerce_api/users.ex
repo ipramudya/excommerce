@@ -1,6 +1,7 @@
 defmodule ExcommerceApi.Users do
   import Ecto.Query, warn: false
 
+  alias ExcommerceApi.Address
   alias ExcommerceApi.Repo
   alias ExcommerceApi.Accounts.User
   alias ExcommerceApi.Accounts.Account
@@ -8,12 +9,10 @@ defmodule ExcommerceApi.Users do
   @spec list_users() :: [Account.t()]
   def list_users do
     query =
-      from(
-        a in Account,
-        join: u in User,
-        on: a.id == u.account_id,
-        preload: :user
-      )
+      from account in Account,
+        inner_join: user in User,
+        on: user.account_id == account.id,
+        preload: [user: [:address]]
 
     Repo.all(query)
   end
@@ -21,23 +20,35 @@ defmodule ExcommerceApi.Users do
   @spec get_user!(binary()) :: Account.t() | term()
   def get_user!(id) do
     query =
-      from(a in Account,
-        join: u in User,
-        on: a.id == u.account_id,
-        preload: :user,
-        where: u.id == ^id
-      )
+      from account in Account,
+        inner_join: user in User,
+        on: user.account_id == account.id,
+        where: user.id == ^id,
+        preload: :user
 
     Repo.one!(query)
   end
 
-  @spec create_user(map(), map()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
+  @spec create_user(map(), map()) :: {:ok, any()} | {:error, any()} | Ecto.Multi.failure()
   def create_user(account, user_attrs) do
-    account
-    |> Map.replace(:role, "common")
-    |> Ecto.build_assoc(:user)
-    |> User.changeset(user_attrs)
-    |> Repo.insert()
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert(
+      :user,
+      account
+      |> Map.replace(:role, "common")
+      |> Ecto.build_assoc(:user)
+      |> User.changeset(user_attrs)
+    )
+    |> Ecto.Multi.insert(
+      :address,
+      %Address{}
+      |> Address.changeset(user_attrs["address"])
+    )
+    |> Ecto.Multi.update(:user_update, fn %{user: user, address: address} ->
+      user
+      |> Ecto.Changeset.change(%{address_id: address.id})
+    end)
+    |> Repo.transaction()
   end
 
   @spec update_user(Account.t(), map()) :: {:ok, Account.t()} | {:error, Ecto.Changeset.t()}
