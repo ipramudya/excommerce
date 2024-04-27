@@ -9,7 +9,6 @@ defmodule ExcommerceApiWeb.UserController do
   def index(conn, _params) do
     accounts = Users.list_users()
 
-    IO.inspect(accounts)
     render(conn, :index, accounts: accounts)
   end
 

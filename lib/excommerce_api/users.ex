@@ -24,7 +24,7 @@ defmodule ExcommerceApi.Users do
         inner_join: user in User,
         on: user.account_id == account.id,
         where: user.id == ^id,
-        preload: :user
+        preload: [user: [:address]]
 
     Repo.one!(query)
   end
@@ -51,29 +51,65 @@ defmodule ExcommerceApi.Users do
     |> Repo.transaction()
   end
 
-  @spec update_user(Account.t(), map()) :: {:ok, Account.t()} | {:error, Ecto.Changeset.t()}
+  @spec update_user(Account.t(), map()) :: {:ok, any()} | {:error, any()} | Ecto.Multi.failure()
   def update_user(%Account{} = account, attrs) do
-    case attrs do
-      %{"email" => email, "firstname" => firstname, "lastname" => lastname} ->
-        remap_attrs =
+    update_user_response =
+      Ecto.Multi.new()
+      |> Ecto.Multi.update(:update_user, fn _params ->
+        remap_account_changeset =
           account
           |> Map.from_struct()
-          |> Map.replace(:email, email)
-          |> Map.update(:user, nil, fn user ->
+          |> Map.update!(:email, &(Map.get(attrs, "email") || &1))
+          |> Map.update!(:user, fn user ->
             %{
               Map.from_struct(user)
-              | firstname: firstname,
-                lastname: lastname
+              | firstname: Map.get(attrs, "firstname") || user.firstname,
+                lastname: Map.get(attrs, "lastname") || user.lastname
             }
           end)
 
         account
         |> Repo.preload(:user)
-        |> Account.update_changeset(remap_attrs)
-        |> Repo.update()
+        |> Account.update_changeset(remap_account_changeset)
+      end)
+      |> Ecto.Multi.update(:update_address, fn _params ->
+        address = account.user.address
 
-      _ ->
-        {:error, :bad_request}
+        remap_address_changeset =
+          case Map.get(attrs, "address") do
+            nil ->
+              address
+              |> Map.from_struct()
+              |> Map.take([:full_line, :city, :province, :postal_code])
+
+            address_attrs ->
+              address_keys =
+                address
+                |> Map.from_struct()
+                |> Map.keys()
+                |> Enum.map(&Atom.to_string(&1))
+
+              remap =
+                for key <- address_keys, into: %{} do
+                  unless is_nil(Map.get(address_attrs, key)) do
+                    {key, Map.get(address_attrs, key)}
+                  else
+                    {key, Map.get(address, String.to_atom(key))}
+                  end
+                end
+
+              remap
+              |> Map.take(["full_line", "city", "province", "postal_code"])
+          end
+
+        address
+        |> Address.changeset(remap_address_changeset)
+      end)
+      |> Repo.transaction()
+
+    with {:ok, res} <- update_user_response do
+      replaced_res = put_in(res.update_user.user.address, res.update_address)
+      {:ok, replaced_res.update_user}
     end
   end
 end
