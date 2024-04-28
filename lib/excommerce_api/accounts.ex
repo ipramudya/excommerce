@@ -14,13 +14,16 @@ defmodule ExcommerceApi.Accounts do
 
   @spec get_account!(binary()) :: Account.t()
   def get_account!(id) do
-    Repo.get!(Account, id) |> Repo.preload(:user)
+    Account
+    |> Repo.get!(id)
+    |> Repo.preload(:user)
   end
 
   @spec get_by_email(String.t()) :: Account.t() | nil
   def get_by_email(email) do
-    query = from a in Account, where: a.email == ^email
-    Repo.one(query) |> Repo.preload(:user)
+    from(a in Account, where: a.email == ^email)
+    |> Repo.one()
+    |> Repo.preload(:user)
   end
 
   @spec create_account(map()) :: {:ok, Account.t()} | {:error, Ecto.Changeset.t()}
@@ -31,7 +34,7 @@ defmodule ExcommerceApi.Accounts do
     |> Repo.insert()
   end
 
-  # @spec delete_account(Account.t()) :: {:ok, Account.t()} | {:error, Ecto.Changeset.t()}
+  @spec delete_account(Account.t()) :: {:ok, any()} | {:error, any()} | Ecto.Multi.failure()
   def delete_account(%Account{} = account) do
     Ecto.Multi.new()
     |> Ecto.Multi.delete(:account, account)

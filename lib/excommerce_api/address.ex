@@ -10,7 +10,7 @@ defmodule ExcommerceApi.Address do
     field :province, :string
     field :postal_code, :string
 
-    has_one :user, User, defaults: nil
+    has_one :user, ExcommerceApi.Accounts.User, defaults: nil
 
     timestamps(inserted_at: :created_at)
   end

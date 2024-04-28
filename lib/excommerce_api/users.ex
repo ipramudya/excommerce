@@ -8,25 +8,23 @@ defmodule ExcommerceApi.Users do
 
   @spec list_users() :: [Account.t()]
   def list_users do
-    query =
-      from account in Account,
-        inner_join: user in User,
-        on: user.account_id == account.id,
-        preload: [user: [:address]]
-
-    Repo.all(query)
+    from(account in Account,
+      inner_join: user in User,
+      on: user.account_id == account.id,
+      preload: [user: [:address]]
+    )
+    |> Repo.all()
   end
 
   @spec get_user!(binary()) :: Account.t() | term()
   def get_user!(id) do
-    query =
-      from account in Account,
-        inner_join: user in User,
-        on: user.account_id == account.id,
-        where: user.id == ^id,
-        preload: [user: [:address]]
-
-    Repo.one!(query)
+    from(account in Account,
+      inner_join: user in User,
+      on: user.account_id == account.id,
+      where: user.id == ^id,
+      preload: [user: [:address]]
+    )
+    |> Repo.one!()
   end
 
   @spec create_user(map(), map()) :: {:ok, any()} | {:error, any()} | Ecto.Multi.failure()
@@ -41,12 +39,10 @@ defmodule ExcommerceApi.Users do
     )
     |> Ecto.Multi.insert(
       :address,
-      %Address{}
-      |> Address.changeset(user_attrs["address"])
+      Address.changeset(%Address{}, user_attrs["address"])
     )
     |> Ecto.Multi.update(:user_update, fn %{user: user, address: address} ->
-      user
-      |> Ecto.Changeset.change(%{address_id: address.id})
+      Ecto.Changeset.change(user, %{address_id: address.id})
     end)
     |> Repo.transaction()
   end
@@ -89,21 +85,17 @@ defmodule ExcommerceApi.Users do
                 |> Map.keys()
                 |> Enum.map(&Atom.to_string(&1))
 
-              remap =
-                for key <- address_keys, into: %{} do
-                  unless is_nil(Map.get(address_attrs, key)) do
-                    {key, Map.get(address_attrs, key)}
-                  else
-                    {key, Map.get(address, String.to_atom(key))}
-                  end
+              for key <- address_keys, into: %{} do
+                unless is_nil(Map.get(address_attrs, key)) do
+                  {key, Map.get(address_attrs, key)}
+                else
+                  {key, Map.get(address, String.to_atom(key))}
                 end
-
-              remap
+              end
               |> Map.take(["full_line", "city", "province", "postal_code"])
           end
 
-        address
-        |> Address.changeset(remap_address_changeset)
+        Address.changeset(address, remap_address_changeset)
       end)
       |> Repo.transaction()
 

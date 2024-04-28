@@ -8,7 +8,6 @@ defmodule ExcommerceApiWeb.UserController do
   @spec index(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def index(conn, _params) do
     accounts = Users.list_users()
-
     render(conn, :index, accounts: accounts)
   end
 
