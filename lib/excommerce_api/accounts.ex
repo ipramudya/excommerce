@@ -50,4 +50,19 @@ defmodule ExcommerceApi.Accounts do
     |> Account.role_changeset(attrs)
     |> Repo.update()
   end
+
+  def change_password(account, attrs) do
+    case Bcrypt.verify_pass(attrs.current_password, account.password) do
+      true ->
+        put_into_attrs = %{password: attrs.new_password}
+
+        account
+        |> Repo.preload(user: [:address])
+        |> Account.update_password_changeset(put_into_attrs)
+        |> Repo.update()
+
+      false ->
+        {:error, "Passwords are incorrect"}
+    end
+  end
 end

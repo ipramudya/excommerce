@@ -40,6 +40,12 @@ defmodule ExcommerceApi.Accounts.Account do
     |> unique_constraint(:email)
   end
 
+  def update_password_changeset(account, attrs) do
+    account
+    |> cast(attrs, [:password])
+    |> hash_password()
+  end
+
   def role_changeset(account, attrs) do
     account
     |> cast(attrs, [:role])

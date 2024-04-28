@@ -52,6 +52,7 @@ defmodule ExcommerceApiWeb.Router do
     pipe_through [:api, :auth, :ensure_auth]
 
     # TODO: resources for personal user info, without passing id, retrieve from user's token
-    get "/users-me", AuthController, :user_me
+    get "/users-me", UserController, :me
+    post "/users-me/password", UserController, :change_password
   end
 end
