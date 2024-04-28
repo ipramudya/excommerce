@@ -11,7 +11,6 @@ defmodule ExcommerceApiWeb.UserJSON do
         firstname: user.firstname,
         id: user.id,
         lastname: user.lastname,
-        logout_at: account.logout_at,
         address: Map.take(address, [:id, :full_line, :city, :province, :postal_code])
       }
     }
@@ -28,7 +27,6 @@ defmodule ExcommerceApiWeb.UserJSON do
       firstname: data.user.firstname,
       id: data.user.id,
       lastname: data.user.lastname,
-      logout_at: data.logout_at,
       address: Map.take(data.user.address, [:id, :full_line, :province, :city, :postal_code])
     }
   end

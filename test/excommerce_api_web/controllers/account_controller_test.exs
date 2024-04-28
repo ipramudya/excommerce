@@ -7,15 +7,13 @@ defmodule ExcommerceApiWeb.AccountControllerTest do
 
   @create_attrs %{
     password: "some password",
-    email: "some email",
-    logout_at: "some logout_at"
+    email: "some email"
   }
   @update_attrs %{
     password: "some updated password",
-    email: "some updated email",
-    logout_at: "some updated logout_at"
+    email: "some updated email"
   }
-  @invalid_attrs %{password: nil, email: nil, logout_at: nil}
+  @invalid_attrs %{password: nil, email: nil}
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
@@ -38,7 +36,6 @@ defmodule ExcommerceApiWeb.AccountControllerTest do
       assert %{
                "id" => ^id,
                "email" => "some email",
-               "logout_at" => "some logout_at",
                "password" => "some password"
              } = json_response(conn, 200)["data"]
     end
@@ -61,7 +58,6 @@ defmodule ExcommerceApiWeb.AccountControllerTest do
       assert %{
                "id" => ^id,
                "email" => "some updated email",
-               "logout_at" => "some updated logout_at",
                "password" => "some updated password"
              } = json_response(conn, 200)["data"]
     end

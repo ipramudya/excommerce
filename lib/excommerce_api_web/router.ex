@@ -28,8 +28,7 @@ defmodule ExcommerceApiWeb.Router do
     pipe_through [:api, :auth, :ensure_auth, :ensure_superadmin]
 
     # within superadmin/admin privilege
-    get "/accounts", AccountController, :index
-    get "/accounts/:id", AccountController, :show
+    post "/accounts", AccountController, :create
     delete "/accounts/:id", AccountController, :delete
     put "/accounts/:id/role", AccountController, :change_role
   end
@@ -38,7 +37,8 @@ defmodule ExcommerceApiWeb.Router do
   scope "/api", ExcommerceApiWeb do
     pipe_through [:api, :auth, :ensure_auth, :ensure_admin]
 
-    post "/accounts", AccountController, :create
+    get "/accounts", AccountController, :index
+    get "/accounts/:id", AccountController, :show
 
     get "/users", UserController, :index
     post "/users", UserController, :create

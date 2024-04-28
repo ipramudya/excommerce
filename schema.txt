@@ -5,7 +5,6 @@ Table accounts {
   id uuid
   email string
   password string [note: 'should be hashed']
-  logout_at timestamp [default: null]
   
   created_at timestamp [default: 'now()']
   updated_at timestamp [default: 'now()']

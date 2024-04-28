@@ -6,7 +6,6 @@ defmodule ExcommerceApi.Accounts.Account do
   @type t :: %__MODULE__{
           password: String.t(),
           email: String.t(),
-          logout_at: String.t() | nil,
           role: String.t(),
           user: User.t() | nil
         }
@@ -16,7 +15,6 @@ defmodule ExcommerceApi.Accounts.Account do
   schema "accounts" do
     field :password, :string
     field :email, :string
-    field :logout_at, :string
     field :role, :string
 
     has_one :user, User, defaults: nil
@@ -26,7 +24,7 @@ defmodule ExcommerceApi.Accounts.Account do
 
   def changeset(account, attrs) do
     account
-    |> cast(attrs, [:email, :password, :logout_at, :role])
+    |> cast(attrs, [:email, :password, :role])
     |> cast_assoc(:user)
     |> validate_required([:email, :password])
     |> unique_constraint(:email)

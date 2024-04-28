@@ -12,7 +12,6 @@ defmodule ExcommerceApi.AccountsFixtures do
       attrs
       |> Enum.into(%{
         email: "some email",
-        logout_at: "some logout_at",
         password: "some password"
       })
 
