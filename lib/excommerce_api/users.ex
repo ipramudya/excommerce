@@ -41,7 +41,7 @@ defmodule ExcommerceApi.Users do
       :address,
       Address.changeset(%Address{}, user_attrs["address"])
     )
-    |> Ecto.Multi.update(:user_update, fn %{user: user, address: address} ->
+    |> Ecto.Multi.update(:update_address, fn %{user: user, address: address} ->
       Ecto.Changeset.change(user, %{address_id: address.id})
     end)
     |> Repo.transaction()
@@ -66,7 +66,7 @@ defmodule ExcommerceApi.Users do
 
         account
         |> Repo.preload(:user)
-        |> Account.update_changeset(remap_account_changeset)
+        |> Account.cast_update_user_changeset(remap_account_changeset)
       end)
       |> Ecto.Multi.update(:update_address, fn _params ->
         address = account.user.address

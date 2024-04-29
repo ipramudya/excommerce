@@ -2,36 +2,39 @@ defmodule ExcommerceApiWeb.AccountJSON do
   alias ExcommerceApi.Accounts.Account
 
   def index(%{accounts: accounts}) do
-    %{data: for(account <- accounts, do: data(account))}
+    %{accounts: for(account <- accounts, do: data(account))}
   end
 
   def show(%{account: account}) do
-    %{data: data(account)}
+    %{account: data(account)}
   end
 
   def show_with_token(%{account: account, token: token}) do
-    %{data: data(account), token: token}
+    %{account: data(account), token: token}
   end
 
   defp data(%Account{} = account) do
     user =
-      case Map.fetch(account, :user) do
-        {:ok, nil} ->
-          nil
+      account
+      |> Map.get(:user)
+      |> case do
+        nil -> nil
+        map -> Map.take(map, [:id, :firstname, :lastname])
+      end
 
-        {:ok, user} ->
-          %{
-            id: user.id,
-            firstname: user.firstname,
-            lastname: user.lastname
-          }
+    seller =
+      account
+      |> Map.get(:seller)
+      |> case do
+        nil -> nil
+        map -> Map.take(map, [:id, :firstname, :lastname, :bio])
       end
 
     %{
       id: account.id,
       email: account.email,
       role: account.role,
-      seller: nil,
+      seller: seller,
       user: user
     }
   end

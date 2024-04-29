@@ -21,13 +21,13 @@ defmodule ExcommerceApiWeb.Router do
 
     post "/signin", AuthController, :signin
     post "/users/register", UserController, :create
+    post "/sellers/register", SellerController, :create
   end
 
   # ------------ superadmin authorization ------------
   scope "/api", ExcommerceApiWeb do
     pipe_through [:api, :auth, :ensure_auth, :ensure_superadmin]
 
-    # within superadmin/admin privilege
     post "/accounts", AccountController, :create
     delete "/accounts/:id", AccountController, :delete
     put "/accounts/:id/role", AccountController, :change_role
@@ -41,18 +41,26 @@ defmodule ExcommerceApiWeb.Router do
     get "/accounts/:id", AccountController, :show
 
     get "/users", UserController, :index
-    post "/users", UserController, :create
     get "/users/:id", UserController, :show
+    post "/users", UserController, :create
     put "/users/:id", UserController, :update
     delete "/users/:id", UserController, :delete
+
+    get "/sellers", SellerController, :index
+    get "/sellers/:id", SellerController, :show
+    post "/sellers", SellerController, :create
+    put "/sellers/:id", SellerController, :update
+    delete "/sellers/:id", SellerController, :delete
   end
 
   # ------------ basic authorization ------------
   scope "/api", ExcommerceApiWeb do
     pipe_through [:api, :auth, :ensure_auth]
 
-    # TODO: resources for personal user info, without passing id, retrieve from user's token
     get "/users-me", UserController, :me
     post "/users-me/password", UserController, :change_password
+
+    get "/sellers-me", SellerController, :me
+    post "/sellers-me/password", SellerController, :change_password
   end
 end

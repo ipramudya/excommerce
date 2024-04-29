@@ -1,4 +1,5 @@
 defmodule ExcommerceApi.Accounts.Account do
+  alias ExcommerceApi.Accounts.Seller
   alias ExcommerceApi.Accounts.User
   use Ecto.Schema
   import Ecto.Changeset
@@ -7,7 +8,8 @@ defmodule ExcommerceApi.Accounts.Account do
           password: String.t(),
           email: String.t(),
           role: String.t(),
-          user: User.t() | nil
+          user: User.t() | nil,
+          seller: Seller.t() | nil
         }
 
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -18,6 +20,7 @@ defmodule ExcommerceApi.Accounts.Account do
     field :role, :string
 
     has_one :user, User, defaults: nil
+    has_one :seller, Seller, defaults: nil
 
     timestamps(inserted_at: :created_at)
   end
@@ -26,16 +29,22 @@ defmodule ExcommerceApi.Accounts.Account do
     account
     |> cast(attrs, [:email, :password, :role])
     |> cast_assoc(:user)
+    |> cast_assoc(:seller)
     |> validate_required([:email, :password])
     |> unique_constraint(:email)
     |> hash_password()
   end
 
-  def update_changeset(account, attrs) do
+  def cast_update_seller_changeset(account, attrs) do
     account
-    |> cast(attrs, [:email])
+    |> prepend_for_update(attrs)
+    |> cast_assoc(:seller)
+  end
+
+  def cast_update_user_changeset(account, attrs) do
+    account
+    |> prepend_for_update(attrs)
     |> cast_assoc(:user)
-    |> unique_constraint(:email)
   end
 
   def update_password_changeset(account, attrs) do
@@ -60,5 +69,11 @@ defmodule ExcommerceApi.Accounts.Account do
       _ ->
         changeset
     end
+  end
+
+  defp prepend_for_update(changeset, attrs) do
+    changeset
+    |> cast(attrs, [:email])
+    |> unique_constraint(:email)
   end
 end

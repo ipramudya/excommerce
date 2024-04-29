@@ -1,11 +1,11 @@
 defmodule ExcommerceApiWeb.UserJSON do
   def index(%{accounts: accounts}) do
-    %{data: for(account <- accounts, do: remap_data_not_creation(account))}
+    %{users: for(account <- accounts, do: remap_data_not_creation(account))}
   end
 
   def created(%{user: user, account: account, address: address}) do
     %{
-      data: %{
+      user: %{
         account_id: account.id,
         email: account.email,
         firstname: user.firstname,
@@ -17,7 +17,7 @@ defmodule ExcommerceApiWeb.UserJSON do
   end
 
   def show(%{account: account}) do
-    %{data: remap_data_not_creation(account)}
+    %{user: remap_data_not_creation(account)}
   end
 
   defp remap_data_not_creation(data) do

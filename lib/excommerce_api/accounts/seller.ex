@@ -27,8 +27,8 @@ defmodule ExcommerceApi.Accounts.Seller do
   @doc false
   def changeset(seller, attrs) do
     seller
-    |> cast(attrs, [:fistname, :lastname, :bio])
+    |> cast(attrs, [:firstname, :lastname, :bio])
     |> foreign_key_constraint(:account_id)
-    |> validate_required([:fistname, :lastname, :bio])
+    |> validate_required([:firstname, :lastname, :bio])
   end
 end

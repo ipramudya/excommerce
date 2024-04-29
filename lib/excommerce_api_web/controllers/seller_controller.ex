@@ -1,38 +1,37 @@
-defmodule ExcommerceApiWeb.UserController do
+defmodule ExcommerceApiWeb.SellerController do
   use ExcommerceApiWeb, :controller
 
-  alias ExcommerceApi.{Accounts, Accounts.Account, Users}
+  alias ExcommerceApi.{Accounts.Account, Accounts, Sellers}
 
   action_fallback ExcommerceApiWeb.FallbackController
 
   def index(conn, _params) do
-    accounts = Users.list_users()
+    accounts = Sellers.list_sellers()
     render(conn, :index, accounts: accounts)
   end
 
-  def create(conn, %{"account" => account_params, "user" => user_params}) do
+  def create(conn, %{"account" => account_params, "seller" => seller_params}) do
     with {:ok, %Account{} = account} <- Accounts.create_account(account_params) do
-      case Users.create_user(account, user_params) do
-        {:ok, created_user_transaction} ->
+      case Sellers.create_seller(account, seller_params) do
+        {:ok, created_seller} ->
           conn
           |> put_status(:created)
           |> render(:created, %{
             account: account,
-            user: created_user_transaction.user,
-            address: created_user_transaction.address
+            seller: created_seller
           })
 
-        {:error, create_user_changeset_error} ->
+        {:error, create_seller_changeset_error} ->
           case Accounts.delete_account(account) do
             {:ok, _transaction} ->
-              {:error, create_user_changeset_error}
+              {:error, create_seller_changeset_error}
 
             _ ->
               conn
               |> put_status(:internal_server_error)
               |> json(%{
                 errors: %{
-                  message: "Something went wrong, cannot create user and please try again."
+                  message: "Something went wrong, cannot create seller and please try again."
                 }
               })
           end
@@ -41,33 +40,33 @@ defmodule ExcommerceApiWeb.UserController do
   end
 
   def show(conn, %{"id" => id}) do
-    account = Users.get_user!(id)
+    account = Sellers.get_seller!(id)
     render(conn, :show, account: account)
   end
 
-  def update(conn, %{"id" => id, "user" => user_params}) do
-    account = Users.get_user!(id)
+  def update(conn, %{"id" => id, "seller" => seller_param}) do
+    account = Sellers.get_seller!(id)
 
-    with {:ok, %Account{} = account} <- Users.update_user(account, user_params) do
-      render(conn, :show, account: account)
+    with {:ok, seller} <- Sellers.update_seller(account, seller_param) do
+      render(conn, :show, account: seller)
     end
   end
 
   def delete(conn, %{"id" => id}) do
-    account = Users.get_user!(id)
+    account = Sellers.get_seller!(id)
     ExcommerceApiWeb.AccountController.delete(conn, %{"id" => account.id})
   end
 
   def me(conn, _params) do
     account = conn.assigns.current_account
 
-    if is_nil(account.user) do
+    if is_nil(account.seller) do
       conn
       |> put_status(:not_found)
-      |> json(%{errors: %{message: "There is no user on this associated account"}})
+      |> json(%{errors: %{message: "There is no seller on this associated account"}})
     else
       conn
-      |> put_view(ExcommerceApiWeb.UserJSON)
+      |> put_view(ExcommerceApiWeb.SellerJSON)
       |> render(:show, account: account)
     end
   end
@@ -75,10 +74,10 @@ defmodule ExcommerceApiWeb.UserController do
   def change_password(conn, %{"new_password" => new_pass, "current_password" => curr_pass}) do
     account = conn.assigns.current_account
 
-    if is_nil(account.user) do
+    if is_nil(account.seller) do
       conn
       |> put_status(:not_found)
-      |> json(%{errors: %{message: "There is no user on this associated account"}})
+      |> json(%{errors: %{message: "There is no seller on this associated account"}})
     else
       with {:ok, _account} <-
              Accounts.change_password(account, %{
