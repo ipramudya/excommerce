@@ -1,6 +1,7 @@
-defmodule ExcommerceApi.Accounts.Seller do
+defmodule ExcommerceApi.Schema.Accounts.Seller do
   use Ecto.Schema
   import Ecto.Changeset
+  alias ExcommerceApi.Schema.Accounts.Account
 
   @type t :: %__MODULE__{
           firstname: String.t(),
@@ -16,7 +17,7 @@ defmodule ExcommerceApi.Accounts.Seller do
     field :lastname, :string
     field :bio, :string
 
-    belongs_to(:accounts, ExcommerceApi.Accounts.Account,
+    belongs_to(:accounts, Account,
       foreign_key: :account_id,
       type: :binary_id
     )

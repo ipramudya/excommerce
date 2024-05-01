@@ -1,10 +1,8 @@
-defmodule ExcommerceApi.Users do
+defmodule ExcommerceApi.Context.Users do
   import Ecto.Query, warn: false
 
-  alias ExcommerceApi.Address
+  alias ExcommerceApi.Schema.{Address, Accounts.Account, Accounts.User}
   alias ExcommerceApi.Repo
-  alias ExcommerceApi.Accounts.User
-  alias ExcommerceApi.Accounts.Account
 
   @spec list_users() :: [Account.t()]
   def list_users do

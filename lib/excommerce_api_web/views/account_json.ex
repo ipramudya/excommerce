@@ -1,5 +1,5 @@
 defmodule ExcommerceApiWeb.AccountJSON do
-  alias ExcommerceApi.Accounts.Account
+  alias ExcommerceApi.Schema.Accounts.Account
 
   def index(%{accounts: accounts}) do
     %{accounts: for(account <- accounts, do: data(account))}

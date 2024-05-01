@@ -1,8 +1,7 @@
-defmodule ExcommerceApi.Accounts.Account do
-  alias ExcommerceApi.Accounts.Seller
-  alias ExcommerceApi.Accounts.User
+defmodule ExcommerceApi.Schema.Accounts.Account do
   use Ecto.Schema
   import Ecto.Changeset
+  alias ExcommerceApi.Schema.{Accounts.Seller, Accounts.User}
 
   @type t :: %__MODULE__{
           password: String.t(),

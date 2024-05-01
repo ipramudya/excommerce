@@ -1,6 +1,7 @@
-defmodule ExcommerceApi.Address do
+defmodule ExcommerceApi.Schema.Address do
   use Ecto.Schema
   import Ecto.Changeset
+  alias ExcommerceApi.Schema.Accounts.User
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -10,7 +11,7 @@ defmodule ExcommerceApi.Address do
     field :province, :string
     field :postal_code, :string
 
-    has_one :user, ExcommerceApi.Accounts.User, defaults: nil
+    has_one :user, User, defaults: nil
 
     timestamps(inserted_at: :created_at)
   end

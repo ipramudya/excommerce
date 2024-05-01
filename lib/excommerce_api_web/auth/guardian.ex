@@ -1,5 +1,5 @@
 defmodule ExcommerceApiWeb.Auth.Guardian do
-  alias ExcommerceApi.Accounts
+  alias ExcommerceApi.Context.Accounts
   use Guardian, otp_app: :excommerce_api
 
   def subject_for_token(account, _claims) do
