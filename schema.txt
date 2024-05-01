@@ -32,15 +32,21 @@ Table favorites {
   updated_at timestamp [default: 'now()']
 }
 
+Table carts {
+  id uuid
+
+  user_id uuid [ref: > users.id]
+
+  created_at timestamp [default: 'now()']
+  updated_at timestamp [default: 'now()']
+}
+
 Table cart_items {
   id uuid
   quantity number
 
-  user_id uuid [ref: > users.id]
+  cart_id uuid [ref: > cart_id]
   product_id uuid [ref: - products.id]
-
-  created_at timestamp [default: 'now()']
-  updated_at timestamp [default: 'now()']
 }
 
 Table sellers {

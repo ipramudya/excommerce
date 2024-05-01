@@ -1,6 +1,7 @@
 - accounts
 - users
 - favorites
+- carts
 - cart_items
 - sellers
 - shops
