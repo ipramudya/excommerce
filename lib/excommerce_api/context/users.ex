@@ -6,23 +6,35 @@ defmodule ExcommerceApi.Context.Users do
 
   @spec list_users() :: [Account.t()]
   def list_users do
-    from(account in Account,
-      inner_join: user in User,
-      on: user.account_id == account.id,
-      preload: [user: [:address]]
-    )
-    |> Repo.all()
+    user_query =
+      from user in User,
+        join: address in Address,
+        on: address.id == user.address_id
+
+    query =
+      from account in Account,
+        join: user in subquery(user_query),
+        on: user.account_id == account.id,
+        preload: [user: [:address]]
+
+    query |> Repo.all()
   end
 
   @spec get_user!(binary()) :: Account.t() | term()
   def get_user!(id) do
-    from(account in Account,
-      inner_join: user in User,
-      on: user.account_id == account.id,
-      where: user.id == ^id,
-      preload: [user: [:address]]
-    )
-    |> Repo.one!()
+    user_query =
+      from user in User,
+        join: address in Address,
+        on: user.address_id == address.id
+
+    query =
+      from account in Account,
+        join: user in subquery(user_query),
+        on: user.account_id == account.id,
+        where: user.id == ^id,
+        preload: [user: [:address]]
+
+    query |> Repo.one!()
   end
 
   @spec create_user(map(), map()) :: {:ok, any()} | {:error, any()} | Ecto.Multi.failure()

@@ -1,7 +1,7 @@
 defmodule ExcommerceApi.Schema.Address do
   use Ecto.Schema
   import Ecto.Changeset
-  alias ExcommerceApi.Schema.Accounts.User
+  # alias ExcommerceApi.Schema.Accounts.User
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -11,15 +11,12 @@ defmodule ExcommerceApi.Schema.Address do
     field :province, :string
     field :postal_code, :string
 
-    has_one :user, User, defaults: nil
-
     timestamps(inserted_at: :created_at)
   end
 
   def changeset(address, attrs) do
     address
     |> cast(attrs, [:full_line, :city, :province, :postal_code])
-    |> cast_assoc(:user)
     |> validate_required([:full_line, :city, :province])
   end
 end

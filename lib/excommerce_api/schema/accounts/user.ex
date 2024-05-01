@@ -21,7 +21,8 @@ defmodule ExcommerceApi.Schema.Accounts.User do
       type: :binary_id
     )
 
-    belongs_to(:address, Address)
+    field :address_id, :binary_id
+    has_one :address, Address, foreign_key: :id, references: :address_id
 
     timestamps(inserted_at: :created_at)
   end
