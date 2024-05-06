@@ -39,18 +39,15 @@ defmodule ExcommerceApi.Context.Users do
   def create_user(account, user_attrs) do
     Ecto.Multi.new()
     |> Ecto.Multi.insert(
-      :user,
+      :address,
+      Address.changeset(%Address{}, user_attrs["address"])
+    )
+    |> Ecto.Multi.insert(:user, fn %{address: address} ->
       account
       |> Map.replace(:role, "common")
       |> Ecto.build_assoc(:user)
       |> User.changeset(user_attrs)
-    )
-    |> Ecto.Multi.insert(
-      :address,
-      Address.changeset(%Address{}, user_attrs["address"])
-    )
-    |> Ecto.Multi.update(:update_address, fn %{user: user, address: address} ->
-      Ecto.Changeset.change(user, %{address_id: address.id})
+      |> Ecto.Changeset.change(%{address_id: address.id})
     end)
     |> Repo.transaction()
   end

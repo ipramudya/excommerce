@@ -1,57 +1,40 @@
 defmodule ExcommerceApi.Context.Shops do
-  @moduledoc """
-  The Shops context.
-  """
-
   import Ecto.Query, warn: false
-  alias ExcommerceApi.Schema.Shop
+
+  alias ExcommerceApi.Schema.{Address, Shop}
   alias ExcommerceApi.Repo
 
-  @doc """
-  Returns the list of shops.
-
-  ## Examples
-
-      iex> list_shops()
-      [%Shop{}, ...]
-
-  """
-  def list_shops do
-    Repo.all(Shop)
+  def list_shops(seller_id) do
+    from(shop in Shop,
+      join: address in Address,
+      on: shop.address_id == address.id,
+      where: shop.seller_id == ^seller_id,
+      preload: [:address, :shop]
+    )
+    |> Repo.all()
   end
 
-  @doc """
-  Gets a single shop.
+  def get_shop!(seller_id, shop_id) do
+    from(shop in Shop,
+      join: address in Address,
+      on: shop.address_id == address.id,
+      where: shop.seller_id == ^seller_id and shop.id == ^shop_id,
+      preload: [:address, :shop]
+    )
+  end
 
-  Raises `Ecto.NoResultsError` if the Shop does not exist.
-
-  ## Examples
-
-      iex> get_shop!(123)
+  def create_shop(seller_id, attrs \\ %{}) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert(
+      :address,
+      Address.changeset(%Address{}, attrs["address"])
+    )
+    |> Ecto.Multi.insert(:shop, fn %{address: address} ->
       %Shop{}
-
-      iex> get_shop!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_shop!(id), do: Repo.get!(Shop, id)
-
-  @doc """
-  Creates a shop.
-
-  ## Examples
-
-      iex> create_shop(%{field: value})
-      {:ok, %Shop{}}
-
-      iex> create_shop(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_shop(attrs \\ %{}) do
-    %Shop{}
-    |> Shop.changeset(attrs)
-    |> Repo.insert()
+      |> Shop.changeset(attrs["shop"])
+      |> Ecto.Changeset.change(%{address_id: address.id, seller_id: seller_id})
+    end)
+    |> Repo.transaction()
   end
 
   @doc """

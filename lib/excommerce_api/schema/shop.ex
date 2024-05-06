@@ -17,7 +17,6 @@ defmodule ExcommerceApi.Schema.Shop do
     timestamps(inserted_at: :created_at)
   end
 
-  @doc false
   def changeset(shop, attrs) do
     shop
     |> cast(attrs, [:name, :bio, :contact])
