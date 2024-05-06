@@ -9,6 +9,7 @@ defmodule ExcommerceApiWeb.Router do
   pipeline :auth, do: plug(ExcommerceApiWeb.Auth.Pipeline)
   pipeline :ensure_superadmin, do: plug(ExcommerceApiWeb.UnsureSuperadmin)
   pipeline :ensure_admin, do: plug(ExcommerceApiWeb.EnsureAdmin)
+  pipeline :ensure_seller, do: plug(ExcommerceApiWeb.EnsureSeller)
 
   pipeline :ensure_auth do
     plug Guardian.Plug.EnsureAuthenticated
@@ -51,6 +52,15 @@ defmodule ExcommerceApiWeb.Router do
     post "/sellers", SellerController, :create
     put "/sellers/:id", SellerController, :update
     delete "/sellers/:id", SellerController, :delete
+  end
+
+  # ------------ seller authorization ------------
+  scope "/api", ExcommerceApiWeb do
+    pipe_through [:api, :auth, :ensure_auth, :ensure_seller]
+
+    get "/shops", ShopController, :index
+    get "/shops/:id", ShopController, :show
+    post "/shops", ShopController, :create
   end
 
   # ------------ basic authorization ------------

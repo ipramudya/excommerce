@@ -64,7 +64,6 @@ Table sellers {
 Table shops {
   id uuid
   name string
-  address text
   bio text
   contact string
 

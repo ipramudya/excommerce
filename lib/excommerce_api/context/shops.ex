@@ -9,7 +9,7 @@ defmodule ExcommerceApi.Context.Shops do
       join: address in Address,
       on: shop.address_id == address.id,
       where: shop.seller_id == ^seller_id,
-      preload: [:address, :shop]
+      preload: [:address, :seller]
     )
     |> Repo.all()
   end
@@ -19,68 +19,35 @@ defmodule ExcommerceApi.Context.Shops do
       join: address in Address,
       on: shop.address_id == address.id,
       where: shop.seller_id == ^seller_id and shop.id == ^shop_id,
-      preload: [:address, :shop]
+      preload: [:address, :seller]
     )
+    |> Repo.one!()
   end
 
   def create_shop(seller_id, attrs \\ %{}) do
     Ecto.Multi.new()
     |> Ecto.Multi.insert(
       :address,
-      Address.changeset(%Address{}, attrs["address"])
+      Address.changeset(%Address{}, attrs[:address])
     )
     |> Ecto.Multi.insert(:shop, fn %{address: address} ->
       %Shop{}
-      |> Shop.changeset(attrs["shop"])
+      |> Shop.changeset(attrs[:shop])
       |> Ecto.Changeset.change(%{address_id: address.id, seller_id: seller_id})
     end)
+    |> Ecto.Multi.run(:final, fn repo, %{address: address, shop: shop} ->
+      val =
+        shop
+        |> repo.preload([:address, :seller])
+        |> Map.from_struct()
+        |> Map.replace!(:address, address)
+
+      {:ok, val}
+    end)
     |> Repo.transaction()
-  end
-
-  @doc """
-  Updates a shop.
-
-  ## Examples
-
-      iex> update_shop(shop, %{field: new_value})
-      {:ok, %Shop{}}
-
-      iex> update_shop(shop, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_shop(%Shop{} = shop, attrs) do
-    shop
-    |> Shop.changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
-  Deletes a shop.
-
-  ## Examples
-
-      iex> delete_shop(shop)
-      {:ok, %Shop{}}
-
-      iex> delete_shop(shop)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_shop(%Shop{} = shop) do
-    Repo.delete(shop)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking shop changes.
-
-  ## Examples
-
-      iex> change_shop(shop)
-      %Ecto.Changeset{data: %Shop{}}
-
-  """
-  def change_shop(%Shop{} = shop, attrs \\ %{}) do
-    Shop.changeset(shop, attrs)
+    |> case do
+      {:ok, %{final: shop}} -> {:ok, shop}
+      _ -> {:error, "Something went wrong!"}
+    end
   end
 end
