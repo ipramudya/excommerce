@@ -11,13 +11,12 @@ defmodule ExcommerceApi.Context.Users do
         join: address in Address,
         on: address.id == user.address_id
 
-    query =
-      from account in Account,
-        join: user in subquery(user_query),
-        on: user.account_id == account.id,
-        preload: [user: [:address]]
-
-    query |> Repo.all()
+    from(account in Account,
+      join: user in subquery(user_query),
+      on: user.account_id == account.id,
+      preload: [user: [:address]]
+    )
+    |> Repo.all()
   end
 
   @spec get_user!(binary()) :: Account.t() | term()
@@ -27,14 +26,13 @@ defmodule ExcommerceApi.Context.Users do
         join: address in Address,
         on: user.address_id == address.id
 
-    query =
-      from account in Account,
-        join: user in subquery(user_query),
-        on: user.account_id == account.id,
-        where: user.id == ^id,
-        preload: [user: [:address]]
-
-    query |> Repo.one!()
+    from(account in Account,
+      join: user in subquery(user_query),
+      on: user.account_id == account.id,
+      where: user.id == ^id,
+      preload: [user: [:address]]
+    )
+    |> Repo.one!()
   end
 
   @spec create_user(map(), map()) :: {:ok, any()} | {:error, any()} | Ecto.Multi.failure()
@@ -79,18 +77,18 @@ defmodule ExcommerceApi.Context.Users do
         |> Account.cast_update_user_changeset(remap_account_changeset)
       end)
       |> Ecto.Multi.update(:update_address, fn _params ->
-        address = account.user.address
+        user_address = account.user.address
 
         remap_address_changeset =
           case Map.get(attrs, "address") do
             nil ->
-              address
+              user_address
               |> Map.from_struct()
               |> Map.take([:full_line, :city, :province, :postal_code])
 
             address_attrs ->
               address_keys =
-                address
+                user_address
                 |> Map.from_struct()
                 |> Map.keys()
                 |> Enum.map(&Atom.to_string(&1))
@@ -99,13 +97,13 @@ defmodule ExcommerceApi.Context.Users do
                 unless is_nil(Map.get(address_attrs, key)) do
                   {key, Map.get(address_attrs, key)}
                 else
-                  {key, Map.get(address, String.to_atom(key))}
+                  {key, Map.get(user_address, String.to_atom(key))}
                 end
               end
               |> Map.take(["full_line", "city", "province", "postal_code"])
           end
 
-        Address.changeset(address, remap_address_changeset)
+        Address.changeset(user_address, remap_address_changeset)
       end)
       |> Repo.transaction()
 

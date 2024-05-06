@@ -55,6 +55,7 @@ defmodule ExcommerceApi.Context.Accounts do
     |> Repo.update()
   end
 
+  @spec change_password(Account.t(), map()) :: {:ok, Account.t()} | {:error, String.t()}
   def change_password(account, attrs) do
     case Bcrypt.verify_pass(attrs.current_password, account.password) do
       true ->
