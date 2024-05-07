@@ -33,7 +33,7 @@ defmodule ExcommerceApi.Context.Shops do
     |> Ecto.Multi.insert(:shop, fn %{address: address} ->
       %Shop{}
       |> Shop.changeset(attrs.shop)
-      |> Ecto.Changeset.change(%{address_id: address[:id], seller_id: seller_id})
+      |> Ecto.Changeset.change(%{address_id: address.id, seller_id: seller_id})
     end)
     |> Ecto.Multi.run(:final, fn repo, %{address: address, shop: shop} ->
       val =
@@ -91,6 +91,21 @@ defmodule ExcommerceApi.Context.Shops do
     |> case do
       {:ok, %{shop: shop, address: address}} -> {:ok, shop: Map.replace(shop, :address, address)}
       _ -> {:error, 400}
+    end
+  end
+
+  def delete_shop(shop_id) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.run(:existing_shop, fn _repo, _params ->
+      val = get_shop!(shop_id)
+      {:ok, val}
+    end)
+    |> Ecto.Multi.delete(:address, fn %{existing_shop: existing_shop} -> existing_shop.address end)
+    |> Ecto.Multi.delete(:shop, fn %{existing_shop: existing_shop} -> existing_shop end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, _opts} -> {:ok, "Success"}
+      res -> IO.inspect(["res", res])
     end
   end
 end

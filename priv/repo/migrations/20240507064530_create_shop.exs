@@ -1,4 +1,4 @@
-defmodule ExcommerceApi.Repo.Migrations.CreateShops do
+defmodule ExcommerceApi.Repo.Migrations.CreateShop do
   use Ecto.Migration
 
   def change do
@@ -7,8 +7,9 @@ defmodule ExcommerceApi.Repo.Migrations.CreateShops do
       add :name, :string
       add :bio, :text
       add :contact, :string
+      add :address_id, :binary_id
       add :seller_id, references(:sellers, on_delete: :delete_all, type: :binary_id)
-      add :address_id, references(:addresses, on_delete: :delete_all, type: :binary_id)
+      # add :address_id, references(:addresses, on_delete: :nothing, type: :binary_id)
 
       timestamps(inserted_at: :created_at)
     end

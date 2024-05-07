@@ -33,4 +33,10 @@ defmodule ExcommerceApiWeb.ShopController do
       render(conn, :show, shop)
     end
   end
+
+  def delete(conn, %{"id" => id}) do
+    with {:ok, message} <- Shops.delete_shop(id) do
+      conn |> put_status(:accepted) |> json(%{message: message})
+    end
+  end
 end

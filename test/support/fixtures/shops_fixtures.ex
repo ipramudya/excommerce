@@ -15,7 +15,8 @@ defmodule ExcommerceApi.ShopsFixtures do
         contact: "some contact",
         name: "some name"
       })
-      |> ExcommerceApi.Shops.create_shop()
+
+    # |> ExcommerceApi.Shops.create_shop()
 
     shop
   end
