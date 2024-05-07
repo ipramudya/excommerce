@@ -4,6 +4,15 @@ defmodule ExcommerceApi.Context.Shops do
   alias ExcommerceApi.Schema.{Address, Shop}
   alias ExcommerceApi.Repo
 
+  def all_shops() do
+    from(shop in Shop,
+      join: address in Address,
+      on: shop.address_id == address.id,
+      preload: [:address, :seller]
+    )
+    |> Repo.all()
+  end
+
   def list_shops(seller_id) do
     from(shop in Shop,
       join: address in Address,

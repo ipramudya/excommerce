@@ -52,6 +52,8 @@ defmodule ExcommerceApiWeb.Router do
     post "/sellers", SellerController, :create
     put "/sellers/:id", SellerController, :update
     delete "/sellers/:id", SellerController, :delete
+
+    get "/shops/all", ShopController, :all
   end
 
   # ------------ seller authorization ------------

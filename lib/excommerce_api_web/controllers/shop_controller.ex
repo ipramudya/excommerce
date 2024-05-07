@@ -5,6 +5,11 @@ defmodule ExcommerceApiWeb.ShopController do
 
   action_fallback ExcommerceApiWeb.FallbackController
 
+  def all(conn, _params) do
+    shops = Shops.all_shops()
+    render(conn, :index, shops: shops)
+  end
+
   def index(conn, _params) do
     account = conn.assigns.current_account
     shops = Shops.list_shops(account.seller.id)
