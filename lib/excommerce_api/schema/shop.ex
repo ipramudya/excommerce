@@ -22,4 +22,8 @@ defmodule ExcommerceApi.Schema.Shop do
     |> cast(attrs, [:name, :bio, :contact])
     |> validate_required([:name, :bio, :contact])
   end
+
+  def update_changeset(shop, attrs) do
+    shop |> cast(attrs, [:name, :bio, :contact])
+  end
 end

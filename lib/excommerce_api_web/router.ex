@@ -61,6 +61,7 @@ defmodule ExcommerceApiWeb.Router do
     get "/shops", ShopController, :index
     get "/shops/:id", ShopController, :show
     post "/shops", ShopController, :create
+    put "/shops/:id", ShopController, :update
   end
 
   # ------------ basic authorization ------------

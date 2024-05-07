@@ -12,6 +12,11 @@ defmodule ExcommerceApiWeb.ShopController do
     render(conn, :index, shops: shops)
   end
 
+  def show(conn, %{"id" => shop_id}) do
+    shop = Shops.get_shop!(shop_id)
+    render(conn, :show, shop: shop)
+  end
+
   def create(conn, %{"shop" => shop_params, "address" => address_params}) do
     account = conn.assigns.current_account
 
@@ -21,10 +26,11 @@ defmodule ExcommerceApiWeb.ShopController do
     end
   end
 
-  def show(conn, %{"id" => shop_id}) do
-    account = conn.assigns.current_account
+  def update(conn, %{"id" => shop_id, "shop" => shop_params}) do
+    {address, shop} = Map.pop(shop_params, "address")
 
-    shop = Shops.get_shop!(account.seller.id, shop_id)
-    render(conn, :show, shop: shop)
+    with {:ok, shop} <- Shops.update_shop(shop_id, %{shop: shop, address: address}) do
+      render(conn, :show, shop)
+    end
   end
 end
