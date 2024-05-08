@@ -1,7 +1,7 @@
 defmodule ExcommerceApi.Schema.Shop do
   use Ecto.Schema
   import Ecto.Changeset
-  alias ExcommerceApi.Schema.{Accounts.Seller, Address}
+  alias ExcommerceApi.Schema.{Accounts.Seller, Address, Products.Product}
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -12,6 +12,8 @@ defmodule ExcommerceApi.Schema.Shop do
 
     field :address_id, :binary_id
     has_one :address, Address, foreign_key: :id, references: :address_id
+
+    has_many :product, Product
 
     belongs_to(:seller, Seller, foreign_key: :seller_id, type: :binary_id)
     timestamps(inserted_at: :created_at)

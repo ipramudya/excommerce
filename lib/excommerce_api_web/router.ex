@@ -57,14 +57,24 @@ defmodule ExcommerceApiWeb.Router do
   end
 
   # ------------ seller authorization ------------
-  scope "/api", ExcommerceApiWeb do
+  scope "/api/shops", ExcommerceApiWeb do
     pipe_through [:api, :auth, :ensure_auth, :ensure_seller]
 
-    get "/shops", ShopController, :index
-    get "/shops/:id", ShopController, :show
-    post "/shops", ShopController, :create
-    put "/shops/:id", ShopController, :update
-    delete "/shops/:id", ShopController, :delete
+    get "/", ShopController, :index
+    get "/:id", ShopController, :show
+    post "/", ShopController, :create
+    put "/:id", ShopController, :update
+    delete "/:id", ShopController, :delete
+
+    get "/:shop_id/products", ProductController, :index
+    get "/products/:id", ProductController, :show
+    post "/:shop_id/products", ProductController, :create
+    put "/products/:id", ProductController, :update
+    delete "/products/:id", ProductController, :delete
+
+    post "/products/:product_id/discount", DiscountController, :create
+    put "/discount/:id", DiscountController, :update
+    delete "/discount/:id", DiscountController, :revoke
   end
 
   # ------------ basic authorization ------------
